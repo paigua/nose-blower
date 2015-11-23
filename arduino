@@ -1,0 +1,28 @@
+ 
+ int val; // Data received from the serial port
+ int fanSpeed;
+ int fanPin = 3;
+ int ledpin = 13;
+
+  void setup() {
+   pinMode(fanPin, OUTPUT); // Set pin as OUTPUT
+   pinMode(ledpin,OUTPUT);
+   Serial.begin(9600); // Start serial communication at 9600 bps
+   Serial.println("Serial is go");
+  }
+
+ void loop() {
+   if (Serial.available()) { // If data is available to read,
+     val = Serial.read(); // read it and store it in val
+   }
+
+    if (val == '0') {
+    analogWrite(fanPin, 255); // turn the fan low
+    digitalWrite(13,LOW);
+    }
+   
+   else if (val == '1') { // If 1 was received
+    digitalWrite(13,HIGH);
+    analogWrite(fanPin, 0); // turn the fan low
+    } 
+}
