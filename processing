@@ -1,0 +1,44 @@
+import processing.serial.*;
+
+Serial myPort;  // Create object from Serial class
+
+void setup() {
+  size(200,200); //make our canvas 200 x 200 pixels big
+  String portName = Serial.list()[2]; //change the 0 to a 1 or 2 etc. to match your port
+  myPort = new Serial(this, portName, 9600);
+}
+
+//create json object, which will store the json file
+JSONObject json;
+
+//this is the URL endpoint that we want to call to retrieve the JSON
+String pollenURL = "https://www.kimonolabs.com/api/4c78sda8?apikey=nNP7iLnO3BmG9tfLnHYcKgQc5jq7pg87";
+
+float mappedVal;
+int fanSpeed;
+int fan = 3;
+
+void draw() {
+  
+  //get the JSON file
+  json = loadJSONObject(pollenURL);
+  print("we got JSON!");
+  print(json);
+    JSONObject results = json.getJSONObject("results"); 
+    JSONArray jsonPollen = results.getJSONArray("collection1");
+    for (int i = 0; i < jsonPollen.size(); i++)
+    {
+      JSONObject pollenCount = jsonPollen.getJSONObject(i);
+      float count = pollenCount.getFloat("Count");
+      if (count < 7 ){
+       myPort.write("0");
+       delay(3000);
+       println("Count: " + count);
+       } 
+     else {
+         myPort.write('1');
+         delay(3000);
+         println("Count: " + count);
+         }
+    }
+}
